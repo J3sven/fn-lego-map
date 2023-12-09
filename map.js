@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     var map = L.map('mapid', {
-        minZoom: 2,
+        minZoom: 1,
         maxZoom: 4,
         center: [0, 0],
-        zoom: 1,
+        zoom: 2,
         crs: L.CRS.Simple
     });
 
