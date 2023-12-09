@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Dimensions of the image
-    var w = 6000, // width of the image
-        h = 6461; // height of the image
+    var w = 12000, // width of the image
+        h = 12856; // height of the image
 
     // Calculate the edges of the image, in coordinates
     var southWest = map.unproject([0, h], map.getMaxZoom()-1);
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var bounds = new L.LatLngBounds(southWest, northEast);
 
     // Add the image to the map
-    L.imageOverlay('./lego-map.png', bounds).addTo(map);
+    L.imageOverlay('./lego-map.webp', bounds).addTo(map);
 
     // Set the view to the center of the image
     map.fitBounds(bounds);
@@ -38,26 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Array of marker data
     var markers = [
-        { imgCoords: [2794, 2594], tooltip: "J 3 3 3's village 1" },
-        { imgCoords: [2394, 2533], tooltip: "Hwajun's village 2" },
+        { imgCoords: [5793, 5596], tooltip: "J 3 3 3's village 1" },
+        { imgCoords: [5611, 5552], tooltip: "Hwajun's village 1" },
+        { imgCoords: [5393, 5527], tooltip: "Hwajun's village 2" },
         { imgCoords: [2749, 3706], tooltip: "Hwajun's village 3" },
-        { imgCoords: [2603.5, 2558.5], tooltip: "Hwajun's village 1" },
-        { imgCoords: [2612.5, 2286.5], tooltip: "loaep's village 1" },
+        { imgCoords: [5749, 6039.5], tooltip: "loaep's village 1" },
         { imgCoords: [2579, 2463], tooltip: "River bridge" },
-        { imgCoords: [2802, 2002], tooltip: "Hostile camp" },
-        { imgCoords: [3132.5, 2325.5], tooltip: "Cows" },
-        { imgCoords: [3251.5, 2394], tooltip: "Cows" },
-        { imgCoords: [3618, 2764], tooltip: "Boss" },
-        { imgCoords: [3284, 3484], tooltip: "Boss" },
-        { imgCoords: [3821, 3572], tooltip: "Boss" },
-        { imgCoords: [4658, 4292], tooltip: "Boss" },
-        { imgCoords: [4724, 3965], tooltip: "Boss" },
-        { imgCoords: [3385, 3478], tooltip: "Great Desert bridge start point" },
-        { imgCoords: [3788, 3699], tooltip: "Great Desert bridge continued" },
-        { imgCoords: [4830, 4421], tooltip: "Desert safehouse" },
-        { imgCoords: [2411, 3377.5], tooltip: "Corn field" },
-        { imgCoords: [2358, 2193], tooltip: "Bridge" },
-        { imgCoords: [2545, 3345], tooltip: "Bridge" },
+        { imgCoords: [6384, 6474], tooltip: "Great Desert bridge start point" },
+        { imgCoords: [6780.5, 6692.5], tooltip: "Great Desert bridge continued" },
+        { imgCoords: [7825, 7418.5], tooltip: "Desert safehouse" },
+        { imgCoords: [6976, 9113], tooltip: "J 3 3 3's village 2" },
+        
     ];
 
     // Loop over the array to create markers
