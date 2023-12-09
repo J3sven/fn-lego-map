@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var markers = [
         { imgCoords: [2794, 2594], tooltip: "J 3 3 3's village 1" },
         { imgCoords: [2394, 2533], tooltip: "Hwajun's village 2" },
+        { imgCoords: [2749, 3706], tooltip: "Hwajun's village 3" },
         { imgCoords: [2603.5, 2558.5], tooltip: "Hwajun's village 1" },
         { imgCoords: [2612.5, 2286.5], tooltip: "loaep's village 1" },
         { imgCoords: [2579, 2463], tooltip: "River bridge" },
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     map.on('click', function(e) {
         var clickedPoint = map.project(e.latlng, map.getMaxZoom()-1);
-        console.log('Clicked coordinates: ', clickedPoint.x+',', clickedPoint.y);
+        console.log(clickedPoint.x+',', clickedPoint.y);
     });
     
 });
