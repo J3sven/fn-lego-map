@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var map = L.map('mapid', {
-        minZoom: 1,
+        minZoom: 2,
         maxZoom: 4,
         center: [0, 0],
         zoom: 1,
@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { imgCoords: [3385, 3478], tooltip: "Great Desert bridge start point" },
         { imgCoords: [3788, 3699], tooltip: "Great Desert bridge continued" },
         { imgCoords: [4830, 4421], tooltip: "Desert safehouse" },
+        { imgCoords: [2411, 3377.5], tooltip: "Corn field" },
         // ... add as many markers as you need
     ];
 
