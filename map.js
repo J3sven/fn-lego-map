@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add custom CSS
     var style = document.createElement('style');
-    style.type = 'text/css';
     style.innerHTML = '.custom-icon { border: none !important; background: none !important; }';
     document.getElementsByTagName('head')[0].appendChild(style);
     
@@ -56,7 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { imgCoords: [3788, 3699], tooltip: "Great Desert bridge continued" },
         { imgCoords: [4830, 4421], tooltip: "Desert safehouse" },
         { imgCoords: [2411, 3377.5], tooltip: "Corn field" },
-        // ... add as many markers as you need
+        { imgCoords: [2358, 2193], tooltip: "Bridge" },
+        { imgCoords: [2545, 3345], tooltip: "Bridge" },
     ];
 
     // Loop over the array to create markers
