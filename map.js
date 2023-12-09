@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { imgCoords: [5793, 5596], tooltip: "J 3 3 3's village 1" },
         { imgCoords: [5611, 5552], tooltip: "Hwajun's village 1" },
         { imgCoords: [5393, 5527], tooltip: "Hwajun's village 2" },
-        { imgCoords: [2749, 3706], tooltip: "Hwajun's village 3" },
+        { imgCoords: [5743.5, 6705], tooltip: "Hwajun's village 3" },
         { imgCoords: [5610, 5289], tooltip: "loaep's village 1" },
         { imgCoords: [5583, 5463], tooltip: "River bridge" },
         { imgCoords: [6384, 6474], tooltip: "Great Desert bridge start point" },
