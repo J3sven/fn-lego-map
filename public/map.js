@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let userMarkers = {};
     let isSettingLocation = false;
-    let discordProfileImageUrl = `./default.jpg`;
     let discordUserId = 'userId';
     let localUserMarker = null;
 
@@ -134,20 +133,16 @@ document.addEventListener('DOMContentLoaded', function() {
             className: 'user-marker-icon'
         });
     
+        // Check if it's the local user or another user
         if (userId === discordUserId) {
-            // If local user's marker exists, update it
             if (localUserMarker) {
-                localUserMarker.setLatLng(latLng);
-                localUserMarker.setIcon(userIcon);
+                localUserMarker.setLatLng(latLng).setIcon(userIcon);
             } else {
-                // Create a new marker for the local user
                 localUserMarker = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(userId);
             }
         } else {
-            // Handle other users' markers
             if (userMarkers[userId]) {
-                userMarkers[userId].setLatLng(latLng);
-                userMarkers[userId].setIcon(userIcon);
+                userMarkers[userId].setLatLng(latLng).setIcon(userIcon);
             } else {
                 userMarkers[userId] = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(userId);
             }
@@ -205,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    
     // Update map when location updates are received via WebSocket
     socket.onmessage = function(event) {
         var data = JSON.parse(event.data);
