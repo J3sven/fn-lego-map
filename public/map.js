@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initializeWebSocket() {
         // Replace 'ws://your-websocket-server-url' with your actual WebSocket server URL
-        socket = new WebSocket('ws://localhost:3000');
+        socket = new WebSocket('ws://map.j3.gg');
 
         socket.onopen = function(event) {
             console.log("WebSocket is open now.");
