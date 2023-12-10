@@ -123,26 +123,30 @@ wss.on('connection', function(ws) {
     ws.on('message', function(message) {
         const data = JSON.parse(message);
         if (data.type === 'locationUpdate') {
-            updateUserLocation(data.userId, data.location, data.profileImageUrl);
+            // Ensure that updateUserLocation function call includes the Discord name
+            updateUserLocation(data.userId, data.location, data.profileImageUrl, data.discordName);
             // Broadcast the updated location to all connected clients
             wss.clients.forEach(function each(client) {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
+                    client.send(message); // The message should now include the discordName
                 }
             });
         }
     });
+    
 });
 
-function updateUserLocation(userId, location, profileImageUrl) {
+function updateUserLocation(userId, location, profileImageUrl, discordName) { 
     const userLocations = readUserLocations();
     userLocations[userId] = {
         location: location,
         timestamp: new Date().toISOString(),
-        profileImageUrl: profileImageUrl // Store the profile image URL
+        profileImageUrl: profileImageUrl,
+        discordName: discordName
     };
     writeUserLocations(userLocations);
 }
+
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');

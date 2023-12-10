@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { imgCoords: [6780.5, 6692.5], tooltip: "Great Desert bridge continued" },
         { imgCoords: [7825, 7418.5], tooltip: "Desert safehouse" },
         { imgCoords: [6976, 9113], tooltip: "J 3 3 3's village 2" },
+        { imgCoords: [4264, 7183], tooltip: "🗿" },
+        { imgCoords: [3810, 6824], tooltip: "most southern known point of snow biome" },
         
     ];
 
@@ -65,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let userMarkers = {};
     let isSettingLocation = false;
     let discordUserId = 'userId';
+    let discordUserName = 'userName';
     let localUserMarker = null;
 
     function initializeWebSocket() {
@@ -113,41 +116,43 @@ document.addEventListener('DOMContentLoaded', function() {
     function processWebSocketData(data) {
         if (data.type === 'locationUpdate') {
             if (data.userId === discordUserId) {
-                updateLocalUserMarker(data.location, data.profileImageUrl, data.userId);
+                updateLocalUserMarker(data.location, data.profileImageUrl, data.userId, data.discordName);
             } else {
-                addUserMarker(data.userId, data.location, data.profileImageUrl);
+                addUserMarker(data.userId, data.location, data.profileImageUrl, data.discordName);
             }
         } else if (data.type === 'initialLocations') {
             Object.keys(data.userLocations).forEach(userId => {
                 const location = data.userLocations[userId].location;
                 const profileImageUrl = data.userLocations[userId].profileImageUrl;
-                addUserMarker(userId, location, profileImageUrl);
+                const discordName = data.userLocations[userId].discordName;
+                addUserMarker(userId, location, profileImageUrl, discordName);
             });
         }
     }
-    
+
     map.on('click', function(e) {
         if (isSettingLocation) {
             isSettingLocation = false;
             var latLng = [e.latlng.lat, e.latlng.lng];
     
             // Update local user's marker
-            updateLocalUserMarker(latLng, discordProfileImageUrl, discordUserId);
+            updateLocalUserMarker(latLng, discordProfileImageUrl, discordUserId, discordUserName);
     
             // Send location update to server
-            sendLocationUpdate(discordUserId, latLng, discordProfileImageUrl);
+            sendLocationUpdate(discordUserId, latLng, discordProfileImageUrl, discordUserName);
         }
         var clickedPoint = map.project(e.latlng, map.getMaxZoom()-1);
         console.log(clickedPoint.x+',', clickedPoint.y);
     });
 
-    function sendLocationUpdate(userId, location, profileImageUrl) {
+    function sendLocationUpdate(userId, location, profileImageUrl, discordName) {
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({
                 type: 'locationUpdate',
                 userId,
                 location,
-                profileImageUrl
+                profileImageUrl,
+                discordName
             }));
         } else {
             console.log("WebSocket is not open. Cannot send data.");
@@ -155,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
  
-    function addUserMarker(userId, location, profileImageUrl) {
+    function addUserMarker(userId, location, profileImageUrl, discordName) {
         var latLng = new L.LatLng(location[0], location[1]);
         var userIcon = L.icon({
             iconUrl: profileImageUrl,
@@ -164,18 +169,20 @@ document.addEventListener('DOMContentLoaded', function() {
             className: 'user-marker-icon'
         });
     
+        var markerTooltip = discordName || userId; // Use Discord name if available, else use userId
+    
         // Check if it's the local user or another user
         if (userId === discordUserId) {
             if (localUserMarker) {
-                localUserMarker.setLatLng(latLng).setIcon(userIcon);
+                localUserMarker.setLatLng(latLng).setIcon(userIcon).bindPopup(markerTooltip);
             } else {
-                localUserMarker = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(userId);
+                localUserMarker = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(markerTooltip);
             }
         } else {
             if (userMarkers[userId]) {
-                userMarkers[userId].setLatLng(latLng).setIcon(userIcon);
+                userMarkers[userId].setLatLng(latLng).setIcon(userIcon).bindPopup(markerTooltip);
             } else {
-                userMarkers[userId] = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(userId);
+                userMarkers[userId] = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(markerTooltip);
             }
         }
     }
@@ -185,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(userData => {
             if (userData.authenticated) {
                 discordUserId = userData.userInfo.id;
+                discordUserName = userData.userInfo.global_name;
                 discordProfileImageUrl = `https://cdn.discordapp.com/avatars/${userData.userInfo.id}/${userData.userInfo.avatar}.png`;
 
                 initializeWebSocket();
@@ -204,17 +212,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 Object.keys(userLocations).forEach(userId => {
                     const location = userLocations[userId].location;
                     const profileImageUrl = userLocations[userId].profileImageUrl;
+                    const discordName = userLocations[userId].discordName;
 
                     if (userId === discordUserId) {
-                        updateLocalUserMarker(location, profileImageUrl, userId);
+                        updateLocalUserMarker(location, profileImageUrl, userId, discordName);
                     } else {
-                        addUserMarker(userId, location, profileImageUrl);
+                        addUserMarker(userId, location, profileImageUrl, discordName);
                     }
                 });
             });
     }
         
-    function updateLocalUserMarker(location, profileImageUrl, userId) {
+    function updateLocalUserMarker(location, profileImageUrl, userId, discordName) {
         var latLng = new L.LatLng(location[0], location[1]);
         var userIcon = L.icon({
             iconUrl: profileImageUrl,
@@ -227,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (localUserMarker) {
                 localUserMarker.setLatLng(latLng).setIcon(userIcon);
             } else {
-                localUserMarker = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(userId);
+                localUserMarker = L.marker(latLng, {icon: userIcon}).addTo(map).bindPopup(discordName);
             }
         }
     }
