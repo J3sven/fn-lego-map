@@ -80,20 +80,51 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         socket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            if (data.type === 'locationUpdate') {
-                addUserMarker(data.userId, data.location, data.profileImageUrl);
-            } else if (data.type === 'initialLocations') {
-                Object.keys(data.userLocations).forEach(userId => {
-                    const location = data.userLocations[userId].location;
-                    const profileImageUrl = data.userLocations[userId].profileImageUrl;
-                    discordProfileImageUrl = profileImageUrl;
-                    addUserMarker(userId, location, profileImageUrl);
-                });
+            // Check if the data is a Blob
+            if (event.data instanceof Blob) {
+                // Create a FileReader to read the Blob
+                var reader = new FileReader();
+                reader.onload = function() {
+                    // This event will trigger once the Blob has been read as text
+                    try {
+                        var data = JSON.parse(reader.result);
+                        processWebSocketData(data);
+                    } catch (e) {
+                        console.error("Error parsing JSON from Blob:", e);
+                    }
+                };
+                reader.onerror = function(e) {
+                    console.error("Error reading Blob:", e);
+                };
+                // Read the Blob as text
+                reader.readAsText(event.data);
+            } else {
+                // Assume event.data is a JSON string
+                try {
+                    var data = JSON.parse(event.data);
+                    processWebSocketData(data);
+                } catch (e) {
+                    console.error("Error parsing JSON:", e);
+                }
             }
-        };
+        }
     }
 
+    function processWebSocketData(data) {
+        if (data.type === 'locationUpdate') {
+            if (data.userId === discordUserId) {
+                updateLocalUserMarker(data.location, data.profileImageUrl, data.userId);
+            } else {
+                addUserMarker(data.userId, data.location, data.profileImageUrl);
+            }
+        } else if (data.type === 'initialLocations') {
+            Object.keys(data.userLocations).forEach(userId => {
+                const location = data.userLocations[userId].location;
+                const profileImageUrl = data.userLocations[userId].profileImageUrl;
+                addUserMarker(userId, location, profileImageUrl);
+            });
+        }
+    }
     
     map.on('click', function(e) {
         if (isSettingLocation) {

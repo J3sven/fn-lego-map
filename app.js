@@ -107,7 +107,6 @@ app.get('/api/user-locations', (req, res) => {
     res.json(userLocations);
 });
 
-
 function writeUserLocations(userLocations) {
     try {
         fs.writeFileSync(userLocationsFilePath, JSON.stringify(userLocations, null, 2), 'utf8');
@@ -115,9 +114,6 @@ function writeUserLocations(userLocations) {
         console.error("Failed to write user locations:", error);
     }
 }
-
-
-
 
 // WebSocket connection handling
 wss.on('connection', function(ws) {
