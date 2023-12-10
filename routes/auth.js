@@ -7,7 +7,7 @@ const DiscordStrategy = require('passport-discord').Strategy;
 
 const clientId = process.env.DISCORD_CLIENT_ID;
 const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-const redirectUri = 'https://fn-lego-map-j3svens-projects.vercel.app/auth/discord/callback';
+const redirectUri = 'https://fn-lego-map.vercel.app/auth/discord/callback';
 
 // Passport and Discord strategy setup
 passport.use(new DiscordStrategy({

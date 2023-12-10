@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const http = require('http');
 const session = require('express-session');
 const passport = require('passport');
 const path = require('path');
