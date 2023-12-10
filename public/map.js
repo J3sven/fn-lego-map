@@ -201,27 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Update map when location updates are received via WebSocket
-    socket.onmessage = function(event) {
-        var data = JSON.parse(event.data);
-        if (data.type === 'locationUpdate') {
-            addUserMarker(data.userId, data.location, data.profileImageUrl);
-        } else if (data.type === 'initialLocations') {
-            Object.keys(data.userLocations).forEach(userId => {
-                const location = data.userLocations[userId].location;
-                const profileImageUrl = data.userLocations[userId].profileImageUrl;
-    
-                if (data.type === 'locationUpdate') {
-                    if (data.userId === discordUserId) {
-                        updateLocalUserMarker(data.location, data.profileImageUrl, data.userId);
-                    } else {
-                        addUserMarker(data.userId, data.location, data.profileImageUrl);
-                    }
-                }
-            });
-        }
-    };
-    
     function addSetLocationButton() {
         var setLocationButton = L.control({position: 'topright'});
         setLocationButton.onAdd = function(map) {
