@@ -8,7 +8,6 @@ const authRouter = require('./routes/auth');
 const apiRouter = require('./routes/api');
 
 const app = express();
-const server = http.createServer(app);
 
 app.use(session({ secret: 'some secret', resave: false, saveUninitialized: false }));
 app.use(express.json()); // For parsing application/json
@@ -19,6 +18,4 @@ app.use(passport.session());
 app.use('/auth', authRouter);
 app.use('/api', apiRouter);
 
-server.listen(3000, () => {
-    console.log('Server started on port 3000');
-});
+module.exports = app;
