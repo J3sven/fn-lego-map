@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const userLocationsFilePath = 'userLocations.json';
-const redirectUri = 'http://localhost:3000/auth/discord/callback'
+const redirectUri = 'https://fn-lego-map.vercel.app/auth/discord/callback'
 const clientId = process.env.DISCORD_CLIENT_ID
 const clientSecret = process.env.DISCORD_CLIENT_SECRET
 

@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initializeWebSocket() {
         // Replace 'ws://your-websocket-server-url' with your actual WebSocket server URL
-        socket = new WebSocket('ws://fn-lego-map.vercel.app');
+        socket = new WebSocket('wss://fn-lego-map.vercel.app');
 
         socket.onopen = function(event) {
             console.log("WebSocket is open now.");
