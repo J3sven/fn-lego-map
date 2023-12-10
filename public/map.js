@@ -61,37 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let userMarkers = {};
     let isSettingLocation = false;
-    let socket;
     let discordProfileImageUrl = `./default.jpg`;
     let discordUserId = 'userId';
     let localUserMarker = null;
-
-    function initializeWebSocket() {
-        // Replace 'ws://your-websocket-server-url' with your actual WebSocket server URL
-        socket = new WebSocket('wss://fn-lego-map.vercel.app');
-
-        socket.onopen = function(event) {
-            console.log("WebSocket is open now.");
-        };
-
-        socket.onerror = function(event) {
-            console.error("WebSocket error observed:", event);
-        };
-
-        socket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            if (data.type === 'locationUpdate') {
-                addUserMarker(data.userId, data.location, data.profileImageUrl);
-            } else if (data.type === 'initialLocations') {
-                Object.keys(data.userLocations).forEach(userId => {
-                    const location = data.userLocations[userId].location;
-                    const profileImageUrl = data.userLocations[userId].profileImageUrl;
-                    discordProfileImageUrl = profileImageUrl;
-                    addUserMarker(userId, location, profileImageUrl);
-                });
-            }
-        };
-    }
 
     
     map.on('click', function(e) {
@@ -110,19 +82,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function sendLocationUpdate(userId, location, profileImageUrl) {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({
-                type: 'locationUpdate',
+        fetch('/api/update-location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 userId,
                 location,
                 profileImageUrl
-            }));
-        } else {
-            console.log("WebSocket is not open. Cannot send data.");
-        }
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Location updated:', result);
+        })
+        .catch(err => console.error('Error updating location:', err));
     }
 
- 
     function addUserMarker(userId, location, profileImageUrl) {
         var latLng = new L.LatLng(location[0], location[1]);
         var userIcon = L.icon({
@@ -152,6 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function updateLocationsPeriodically() {
+        setInterval(() => {
+            fetchUserLocations();
+        }, 60000); // Fetch user locations every 60 seconds
+    }
+
     fetch('/api/user')
         .then(response => response.json())
         .then(userData => {
@@ -159,29 +142,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 discordUserId = userData.userInfo.id;
                 discordProfileImageUrl = `https://cdn.discordapp.com/avatars/${userData.userInfo.id}/${userData.userInfo.avatar}.png`;
 
-                initializeWebSocket();
-                fetchAndInitializeLocations();            
+                fetchUserLocations();
+                updateLocationsPeriodically();            
                 addSetLocationButton()
             } else {
                 addLoginButton();
             }
         });
 
-    function fetchAndInitializeLocations() {
+    function fetchUserLocations() {
         fetch('/api/user-locations')
             .then(response => response.json())
             .then(userLocations => {
                 Object.keys(userLocations).forEach(userId => {
                     const location = userLocations[userId].location;
                     const profileImageUrl = userLocations[userId].profileImageUrl;
-
+    
                     if (userId === discordUserId) {
                         updateLocalUserMarker(location, profileImageUrl, userId);
                     } else {
                         addUserMarker(userId, location, profileImageUrl);
                     }
                 });
-            });
+            })
+            .catch(err => console.error('Error fetching user locations:', err));
     }
         
     function updateLocalUserMarker(location, profileImageUrl, userId) {
@@ -201,26 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    // Update map when location updates are received via WebSocket
-    socket.onmessage = function(event) {
-        var data = JSON.parse(event.data);
-        if (data.type === 'locationUpdate') {
-            addUserMarker(data.userId, data.location, data.profileImageUrl);
-        } else if (data.type === 'initialLocations') {
-            Object.keys(data.userLocations).forEach(userId => {
-                const location = data.userLocations[userId].location;
-                const profileImageUrl = data.userLocations[userId].profileImageUrl;
-    
-                if (data.type === 'locationUpdate') {
-                    if (data.userId === discordUserId) {
-                        updateLocalUserMarker(data.location, data.profileImageUrl, data.userId);
-                    } else {
-                        addUserMarker(data.userId, data.location, data.profileImageUrl);
-                    }
-                }
-            });
-        }
-    };
     
     function addSetLocationButton() {
         var setLocationButton = L.control({position: 'topright'});

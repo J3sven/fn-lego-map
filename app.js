@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require('express');
 const http = require('http');
-const WebSocket = require('ws');
 const session = require('express-session');
 const passport = require('passport');
 const fetch = require('node-fetch');
@@ -12,9 +11,8 @@ const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 const userLocationsFilePath = 'userLocations.json';
-const redirectUri = 'https://fn-lego-map.vercel.app/auth/discord/callback'
+const redirectUri = 'https://fn-lego-map-j3svens-projects.vercel.app/auth/discord/callback'
 const clientId = process.env.DISCORD_CLIENT_ID
 const clientSecret = process.env.DISCORD_CLIENT_SECRET
 
@@ -107,6 +105,11 @@ app.get('/api/user-locations', (req, res) => {
     res.json(userLocations);
 });
 
+app.post('/api/update-location', (req, res) => {
+    const { userId, location, profileImageUrl } = req.body;
+    updateUserLocation(userId, location, profileImageUrl);
+    res.json({ message: 'Location updated successfully' });
+});
 
 function writeUserLocations(userLocations) {
     try {
@@ -115,28 +118,6 @@ function writeUserLocations(userLocations) {
         console.error("Failed to write user locations:", error);
     }
 }
-
-
-
-
-// WebSocket connection handling
-wss.on('connection', function(ws) {
-    const userLocations = readUserLocations();
-    ws.send(JSON.stringify({ type: 'initialLocations', userLocations }));
-
-    ws.on('message', function(message) {
-        const data = JSON.parse(message);
-        if (data.type === 'locationUpdate') {
-            updateUserLocation(data.userId, data.location, data.profileImageUrl);
-            // Broadcast the updated location to all connected clients
-            wss.clients.forEach(function each(client) {
-                if (client !== ws && client.readyState === WebSocket.OPEN) {
-                    client.send(message);
-                }
-            });
-        }
-    });
-});
 
 function updateUserLocation(userId, location, profileImageUrl) {
     const userLocations = readUserLocations();
