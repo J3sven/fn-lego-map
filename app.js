@@ -7,6 +7,7 @@ const passport = require('passport');
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 const path = require('path');
+const { exec } = require('child_process');
 const DiscordStrategy = require('passport-discord').Strategy;
 const fs = require('fs');
 
