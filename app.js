@@ -147,7 +147,24 @@ function updateUserLocation(userId, location, profileImageUrl, discordName) {
     writeUserLocations(userLocations);
 }
 
+function runAutoPull() {
+    exec('./autopull.sh', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing autopull.sh: ${error}`);
+            return;
+        }
+
+        if (stderr) {
+            console.error(`Error output from autopull.sh: ${stderr}`);
+            return;
+        }
+
+        console.log(`Output from autopull.sh: ${stdout}`);
+    });
+}
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
+    runAutoPull()
+    setInterval(runAutoPull, 1000 * 60 * 10);
 });

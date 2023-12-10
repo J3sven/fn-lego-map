@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Set the repository directory
+REPO_DIR="/home/ec2-user/fn-lego-map"
+
+# Set the branch you want to push to
+BRANCH="main"
+
+# Function for pushing to the repository
+pull_repo() {
+    # Move to the git repository
+    cd $REPO_DIR
+
+    eval "$(ssh-agent -s)"
+
+    ssh-add ~/.ssh/id_ed25519
+
+    # Pull the latest changes from the repository
+    git pull origin $BRANCH
+
+}
+
+# Call the function
+pull_repo
