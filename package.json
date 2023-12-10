@@ -1,0 +1,23 @@
+{
+  "name": "fn-lego-map",
+  "version": "1.0.0",
+  "description": "A leaflet map that allows for viewing the entirety of my group's fornite lego map rather than what the game limits us to",
+  "main": "map.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "http": "^0.0.1-security",
+    "node-fetch": "^2.7.0",
+    "passport": "^0.7.0",
+    "passport-discord": "^0.1.4",
+    "querystring": "^0.2.1",
+    "ws": "^8.15.0"
+  }
+}
