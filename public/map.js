@@ -1,3 +1,6 @@
+
+var socket;
+
 document.addEventListener('DOMContentLoaded', function() {
     var map = L.map('mapid', {
         minZoom: 1,
@@ -61,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let userMarkers = {};
     let isSettingLocation = false;
-    let socket;
     let discordProfileImageUrl = `./default.jpg`;
     let discordUserId = 'userId';
     let localUserMarker = null;
@@ -164,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 addSetLocationButton()
             } else {
                 addLoginButton();
+                initializeWebSocket();
+                fetchAndInitializeLocations();
             }
         });
 
