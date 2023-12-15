@@ -166,6 +166,6 @@ function runAutoPull() {
 
 server.listen(3000, function() {
     console.log('Server started on port 3000');
-    runAutoPull()
-    setInterval(runAutoPull, 1000 * 60 * 10);
+    // runAutoPull()
+    // setInterval(runAutoPull, 1000 * 60 * 10);
 });
